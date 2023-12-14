@@ -22,7 +22,7 @@ router.post('/register', async (req, res) => {
     const newUser = new User({ username, password, email });
     await newUser.save();
 
-    return res.status(200).json({
+    res.status(200).json({
       code: 200,
       message: '用户注册成功',
       data: {
@@ -32,7 +32,7 @@ router.post('/register', async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       code: 500,
       message: '服务器错误',
       data: null,
@@ -43,20 +43,37 @@ router.post('/register', async (req, res) => {
 // 用户登录路由
 router.post('/login', async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).send('用户不存在');
+      return res.status(200).json({
+        code: 404,
+        message: '用户不存在',
+        data: null,
+      });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).send('密码错误');
+      return res.status(200).json({
+        code: 401,
+        message: '密码错误',
+        data: null,
+      });
     }
 
-    res.status(200).send('登录成功');
+    // 如果登录成功，返回用户的 id、username、email
+    res.status(200).json({
+      code: 200,
+      message: '登录成功',
+      data: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
   } catch (error) {
     res.status(500).send('登录失败');
   }
