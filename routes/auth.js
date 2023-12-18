@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const Candidate = require('../models/Candidate');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -9,10 +10,12 @@ require('dotenv').config();
 router.post('/register', async (req, res) => {
   try {
     const { username, password, email } = req.body;
+    console.log('register input username=', username, 'password=', password, 'email=', email);
 
     // 检查邮箱是否已经存在
     const user = await User.findOne({ email });
     if (user) {
+      console.log('邮箱已被注册');
       return res.status(200).json({
         code: 400,
         message: '邮箱已被注册',
@@ -23,6 +26,12 @@ router.post('/register', async (req, res) => {
     // 创建新用户
     const newUser = new User({ username, password, email });
     await newUser.save();
+
+    // 创建候选人记录
+    const newCandidate = new Candidate({ candidateName: username, userID: newUser._id });
+    await newCandidate.save();
+
+    console.log('用户注册成功');
 
     res.status(200).json({
       code: 200,
@@ -46,6 +55,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('login input password=', password, 'email=', email);
 
     const user = await User.findOne({ email });
 
