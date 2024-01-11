@@ -14,6 +14,7 @@ app.use(cors());
 
 app.use('/auth', require('./routes/auth'));
 app.use('/api', require('./routes/candidates'));
+app.use('/v', require('./routes/vote'));
 
 app.listen(port, () => {
   console.log(`服务器运行在 http://localhost:${port}`);
