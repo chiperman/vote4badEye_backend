@@ -24,6 +24,10 @@ function getWeekNumber(date) {
   return currentWeekNumber;
 }
 
+async function getVotes(query) {
+	return await Vote.find(query)
+}
+
 router.post('/votes', async(req, res) => {
 	const voteTime = new Date()
 	const badEyeId = req.body.badEye;
@@ -64,8 +68,13 @@ router.post('/votes', async(req, res) => {
 })
 
 router.get('/votes', async(req, res) => {
-
-
+	console.log(req.query);
+	let votes = await getVotes(req.query)
+	console.log(votes)
+	return res.status(200).json({
+		code: 200, 
+		data: votes,
+	})
 })
 
 router.use((err, req, res, next) => {

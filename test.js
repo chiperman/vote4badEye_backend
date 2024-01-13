@@ -11,6 +11,7 @@ const axios = require('axios');
 // 	console.log(err);
 // })
 
+let user;
 
 // 获取 token
 axios.post('http://localhost:3000/auth/login', {
@@ -20,7 +21,7 @@ axios.post('http://localhost:3000/auth/login', {
 	console.log('data:', resp.data)
 	return resp.data
 }).then((data) => {
-	const user = data.data
+	user = data.data
 	const instance = axios.create({
 		baseURL: 'http://localhost:3000/',
 		headers: {'Authorization': 'Bearer ' + user.token},
@@ -34,4 +35,20 @@ axios.post('http://localhost:3000/auth/login', {
 
 }).catch((err) => {
 	console.log(err);
+}).then((data) => {
+	console.log("going to get votes")
+	const instance = axios.create({
+		baseURL: 'http://localhost:3000/',
+		headers: {'Authorization': 'Bearer ' + user.token},
+	})
+	return instance.get('http://localhost:3000/v/votes', {
+		params: {
+			voterId: user.id,
+			voteWeek:  2820,
+		}
+	})
+}).then((resp) => {
+	console.log('get votes resp:', resp.data.data)
+}).catch((err) => {
+	console.log(err)
 })
