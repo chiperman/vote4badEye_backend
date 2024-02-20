@@ -1,17 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const Candidate = require('../models/Candidate');
+const Avatar = require('../models/Avatar');
 
 // 获取参赛人员信息的路由
 router.get('/candidates', async (req, res) => {
   try {
-    const candidates = await Candidate.find().populate('userID', 'username');
-    console.log('candidates=', candidates);
+    const candidates = await Candidate.find();
 
-    const formattedCandidates = candidates.map((candidate) => ({
-      userId: candidate.userID._id,
-      username: candidate.userID.username,
-    }));
+    // 使用 Promise.all 并发查询所有参赛人员的头像信息
+    const avatarPromises = candidates.map(async (candidate) => {
+      const avatar = await Avatar.findOne({ userId: candidate.userId });
+      return {
+        userId: candidate.userId,
+        username: candidate.candidateName,
+        imagePath: avatar ? avatar.imagePath : null,
+      };
+    });
+
+    // 等待所有头像信息查询完成
+    const formattedCandidates = await Promise.all(avatarPromises);
 
     res.status(200).json({
       code: 200,
