@@ -1,11 +1,11 @@
 const express = require('express');
+const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+
 const User = require('../models/User');
 const Avatar = require('../models/Avatar');
-
-const router = express.Router();
 
 // 创建上传文件目录
 const uploadDirectory = path.join(__dirname, '../uploads');
@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // 上传文件的路由
-router.post('/uploadAvatar', upload.single('avatar'), async (req, res) => {
+router.post('/avatars', upload.single('avatar'), async (req, res) => {
   try {
     // 获取上传的文件路径
     const fileUrl = `http://localhost:3000/uploads/${req.file.filename}`;
@@ -50,7 +50,10 @@ router.post('/uploadAvatar', upload.single('avatar'), async (req, res) => {
     let avatar = await Avatar.findOne({ userId: user._id });
 
     // 如果用户已有头像记录，则删除旧的头像文件
-    if (avatar && avatar.imagePath) {
+    if (
+      avatar &&
+      avatar.imagePath != 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+    ) {
       const oldImagePath = path.join(__dirname, '../uploads', path.basename(avatar.imagePath));
       fs.unlinkSync(oldImagePath); // 删除文件
     }

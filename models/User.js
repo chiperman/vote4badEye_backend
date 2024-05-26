@@ -1,19 +1,23 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const { isEmail } = require('validator');
 
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: true,
+    required: [true, '请输入用户名'],
   },
   password: {
     type: String,
-    required: true,
+    required: [true, '请输入密码'],
+    minlength: [6, '密码最少六位数'],
   },
   email: {
     type: String,
-    required: true,
-    unique: true, // 仅确保邮箱字段在数据库中是唯一的
+    required: [true, '请输入邮箱'],
+    unique: true,
+    lowercase: true,
+    validate: [isEmail, '请输入正确的邮箱'],
   },
 });
 
@@ -26,11 +30,6 @@ userSchema.pre('save', async function (next) {
   }
   next();
 });
-
-// 创建一个方法来验证用户的密码
-userSchema.methods.comparePassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
 
 const User = mongoose.model('User', userSchema);
 

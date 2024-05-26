@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 const Candidate = require('../models/Candidate');
 const Avatar = require('../models/Avatar');
 
@@ -8,18 +9,18 @@ router.get('/candidates', async (req, res) => {
   try {
     const candidates = await Candidate.find();
 
-    // 使用 Promise.all 并发查询所有参赛人员的头像信息
-    const avatarPromises = candidates.map(async (candidate) => {
-      const avatar = await Avatar.findOne({ userId: candidate.userId });
-      return {
-        userId: candidate.userId,
-        username: candidate.candidateName,
-        imagePath: avatar ? avatar.imagePath : null,
-      };
-    });
-
-    // 等待所有头像信息查询完成
-    const formattedCandidates = await Promise.all(avatarPromises);
+    // 查询所有参赛人员的头像信息
+    const formattedCandidates = await Promise.all(
+      candidates.map(async (candidate) => {
+        const avatar = await Avatar.findOne({ userId: candidate.userId });
+        return {
+          candidateId: candidate._id,
+          userId: candidate.userId,
+          username: candidate.candidateName,
+          imagePath: avatar.imagePath,
+        };
+      })
+    );
 
     res.status(200).json({
       code: 200,

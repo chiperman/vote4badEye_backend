@@ -1,30 +1,25 @@
 const mongoose = require('mongoose');
 
 const voteSchema = new mongoose.Schema({
-  voterId: {
+  voter: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
-  badEyeId: {
+  badEye: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Candidate',
     required: true,
   },
   reason: {
     type: String,
-    required: false,
   },
-  voteWeek: {
-    type: Number,
-    required: true,
-  },
-  voteTime: {
+  voteDate: {
     type: Date,
     required: true,
+    default: Date.now,
   },
 });
-
 
 const Vote = mongoose.model('Vote', voteSchema);
 
