@@ -20,12 +20,12 @@ app.use('/uploads', express.static('uploads'));
 
 // 引入路由文件
 app.use('/api', require('./routes/user'));
-app.use('/api', require('./routes/candidates'));
 
 // 在使用路由之前应用 requireAuth 中间件
+app.use('/api', requireAuth, require('./routes/candidates'));
 app.use('/api', requireAuth, require('./routes/vote'));
 app.use('/api', requireAuth, require('./routes/uploadAvatar'));
 
 app.listen(port, () => {
-  console.log(`服务器运行在 http://localhost:${port}`);
+  console.log(`服务器运行在 ${process.env.NODE_ENV} 环境:${port}`);
 });

@@ -36,6 +36,12 @@ router.post('/votes', async (req, res) => {
   const { candidateIds } = req.body;
   const userId = req.decodedToken.id;
 
+  // if(candidateId)
+  // 如果 candidatesIds 是空数组或者超过 3 个元素，则返回 400 错误
+  if (!candidateIds || candidateIds.length === 0 || candidateIds.length > 3) {
+    return res.status(400).json({ code: 400, message: '不符合投票规则！' });
+  }
+
   try {
     // 检查用户是否存在
     const user = await User.findById(userId);
