@@ -5,7 +5,6 @@ const Vote = require('../models/Vote');
 const User = require('../models/User');
 const Candidate = require('../models/Candidate');
 const { startOfWeek, endOfWeek } = require('date-fns');
-const { cs } = require('date-fns/locale');
 
 // 检查用户是否可以进行投票
 async function canVote(userId) {
