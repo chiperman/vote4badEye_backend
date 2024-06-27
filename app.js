@@ -12,11 +12,10 @@ const port = 3000;
 connectDB();
 
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:8080', credentials: true }));
-app.use(cookieParser());
 
-// 设置静态文件目录
-app.use('/uploads', express.static('uploads'));
+app.use(cors({ origin: true, credentials: true }));
+
+app.use(cookieParser());
 
 // 引入路由文件
 app.use('/api', require('./routes/user'));
@@ -24,8 +23,8 @@ app.use('/api', require('./routes/user'));
 // 在使用路由之前应用 requireAuth 中间件
 app.use('/api', requireAuth, require('./routes/candidates'));
 app.use('/api', requireAuth, require('./routes/vote'));
-app.use('/api', requireAuth, require('./routes/uploadAvatar'));
+app.use('/api', requireAuth, require('./routes/upload'));
 
 app.listen(port, () => {
-  console.log(`服务器运行在 ${process.env.NODE_ENV} 环境:${port}`);
+  console.log(`服务器运行在端口 port = ${port}`);
 });

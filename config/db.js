@@ -1,15 +1,9 @@
 const mongoose = require('mongoose');
-
-const username = process.env.MONGO_USERNAME;
-const password = process.env.MONGO_PASSWORD;
-const host = '101.34.82.202:27017';
-const database = 'vote4badeye';
-
-const uri = `mongodb://${username}:${password}@${host}/${database}`;
+require('dotenv').config();
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(uri, {});
+    await mongoose.connect(process.env.MONGODB_URI, {});
     console.log('MongoDB 连接成功');
   } catch (error) {
     console.error('MongoDB 连接失败:', error.message);

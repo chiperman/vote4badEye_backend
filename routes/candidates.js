@@ -13,6 +13,7 @@ router.get('/candidates', async (req, res) => {
     const formattedCandidates = await Promise.all(
       candidates.map(async (candidate) => {
         const avatar = await Avatar.findOne({ userId: candidate.userId });
+        console.log(avatar);
         return {
           candidateId: candidate._id,
           userId: candidate.userId,
@@ -28,6 +29,7 @@ router.get('/candidates', async (req, res) => {
       data: formattedCandidates,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       code: 500,
       message: '服务器错误',

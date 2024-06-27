@@ -101,7 +101,12 @@ router.post('/login', async (req, res) => {
     }
 
     const token = createToken(user._id);
-    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+      secure: true,
+      sameSite: 'None',
+    });
 
     // 获取用户头像
     const avatar = await Avatar.findOne({ userId: user._id });

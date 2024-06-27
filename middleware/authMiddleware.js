@@ -16,7 +16,6 @@ const requireAuth = (req, res, next) => {
       }
     });
   } else {
-    console.log('no token');
     return res.status(401).json({ code: 401, message: '身份验证失败，请重新登录！' });
   }
 };
